@@ -13,7 +13,4 @@
     "start:backend": "cd backend && npm run start:dev",
     "start:prod": "cd backend && npm run start:prod"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  }
 }
