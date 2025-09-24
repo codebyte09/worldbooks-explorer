@@ -1,38 +1,52 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as dotenv from 'dotenv';
 
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { WorldofbooksScraper } from './scraper/worldofbooks.scraper';
+import { ScraperController } from './scraper/scraper.controller';
 
-@Controller('api')
-export class AppController {
-  @Get('products')
-  @ApiOperation({ summary: 'Returns a list of products based on category and search query' })
-  @ApiQuery({ name: 'category', required: false, description: 'The category slug (e.g., books)' })
-  @ApiQuery({ name: 'q', required: false, description: 'A search query to filter by title or author' })
-  getProducts(@Query('category') category: string | undefined, @Query('q') query: string | undefined) {
-    const allBooks = [
-      { id: 1, title: 'Book One', author: 'Author A', category: 'books', price: 100 },
-      { id: 2, title: 'Book Two', author: 'Author B', category: 'books', price: 150 },
-      { id: 3, title: 'Book Three', author: 'Author C', category: 'books', price: 200 },
-      { id: 4, title: 'Book Four', author: 'Author A', category: 'books', price: 250 },
-      { id: 5, title: 'Book Five', author: 'Author D', category: 'books', price: 125 },
-    ];
+import { Product } from './entities/product.entity';
+import { Category } from './entities/category.entity';
+import { Navigation } from './entities/navigation.entity';
+import { ProductDetail } from './entities/product_detail.entity';
+import { Review } from './entities/review.entity';
+import { ScrapeJob } from './entities/scrape_job.entity';
+import { ViewHistory } from './entities/view_history.entity';
 
-    let filteredBooks = allBooks;
-
-    if (typeof category === 'string') {
-      filteredBooks = filteredBooks.filter(book => book.category === category);
-    }
-
-    if (typeof query === 'string') {
-      const lowercaseQuery = query.toLowerCase();
-      filteredBooks = filteredBooks.filter(book =>
-        book.title.toLowerCase().includes(lowercaseQuery) ||
-        book.author.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-
-    return filteredBooks;
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.get<string>('DATABASE_URL'),
+        autoLoadEntities: true,
+        synchronize: configService.get<string>('NODE_ENV') !== 'production', // Set to false in production
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([
+      Product,
+      Category,
+      Navigation,
+      ProductDetail,
+      Review,
+      ScrapeJob,
+      ViewHistory,
+    ]),
+  ],
+  controllers: [AppController, ScraperController],
+  providers: [AppService, WorldofbooksScraper],
+})
+export class AppModule {
+  constructor() {
+    dotenv.config();
   }
 }
