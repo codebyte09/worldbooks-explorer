@@ -38,7 +38,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <div className="max-w-6xl mx-auto">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
             <h1 className="text-2xl font-bold text-red-800 mb-4">Failed to Load Product</h1>
-            <p className="text-red-600 mb-6">Sorry, we couldn't load the product details.</p>
+            <p className="text-red-600 mb-6">Sorry, we couldn&apos;t load the product details.</p>
             <Link
               href="/category/books"
               className="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"

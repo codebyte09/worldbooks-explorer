@@ -30,11 +30,11 @@ return (
     )}
     {query && (
       <p className="text-lg text-gray-600 mb-4">
-        Showing results for: "{query}"
+        Showing results for: &quot;{query}&quot;
       </p>
     )}
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {products.map((p: any) => (
+      {products.map((p: { id: string; title: string; author: string; price: string; image_url?: string; imageUrl?: string; }) => (
         <ProductCard key={p.id} product={p} />
       ))}
     </div>

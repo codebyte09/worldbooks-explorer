@@ -73,7 +73,7 @@ export default function Home() {
         <div className="mb-8">
           <h2 className="text-3xl font-semibold text-center mb-8">Browse Categories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {navItems.map((item: any) => (
+            {navItems.map((item: { id?: number; slug: string; title: string }) => (
               <Link
                 key={item.id || item.slug}
                 href={`/category/${item.slug}`}
