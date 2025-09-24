@@ -18,16 +18,23 @@ dotenv.config();
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: Number(process.env.DB_PORT || 5432),
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASS || 'postgres',
-      database: process.env.DB_NAME || 'worldbooks',
+      ...(process.env.DATABASE_URL 
+        ? { url: process.env.DATABASE_URL }
+        : {
+            host: process.env.DB_HOST || 'localhost',
+            port: Number(process.env.DB_PORT || 5432),
+            username: process.env.DB_USER || 'postgres',
+            password: process.env.DB_PASS || 'postgres',
+            database: process.env.DB_NAME || 'worldbooks',
+          }
+      ),
       entities: [Product, Category, Navigation, ProductDetail, Review, ScrapeJob, ViewHistory],
       autoLoadEntities: true,
-      synchronize: String(process.env.DB_SYNC || 'true') === 'true',
-      retryAttempts: 1,
-      retryDelay: 1000,
+      synchronize: String(process.env.DB_SYNC || 'false') === 'true',
+      retryAttempts: 3,
+      retryDelay: 2000,
+      logging: process.env.NODE_ENV === 'development',
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     }),
     TypeOrmModule.forFeature([Product, Category, Navigation, ProductDetail, Review, ScrapeJob, ViewHistory]),
   ],
