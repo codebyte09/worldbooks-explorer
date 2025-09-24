@@ -1,13 +1,16 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ProductCard({ product }: { product: any }) {
   return (
     <article className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200">
       <Link href={`/products/${product.id}`} className="block">
         <div className="aspect-[3/4] bg-gray-100 overflow-hidden">
-          <img 
+          <Image 
             src={product.image_url || product.imageUrl || '/placeholder.png'} 
             alt={product.title || 'Book cover'} 
+            width={300}
+            height={400}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />

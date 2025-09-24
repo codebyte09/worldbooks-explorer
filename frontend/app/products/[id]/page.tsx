@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProduct } from '@/lib/api';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const { data: product, isLoading, error } = useQuery({
@@ -68,9 +69,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           {/* Product Image */}
           <div className="lg:w-1/2">
             <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden shadow-lg">
-              <img 
+              <Image 
                 src={product?.image_url || product?.imageUrl || '/placeholder.png'} 
                 alt={product?.title || 'Book cover'} 
+                width={400}
+                height={600}
                 className="w-full h-full object-cover"
               />
             </div>
