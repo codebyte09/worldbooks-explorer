@@ -2,8 +2,9 @@ services:
   - type: web
     name: worldbooks-backend
     env: node
-    buildCommand: npm install && npm run render-postbuild
+    buildCommand: npm install --production && npm run build
     startCommand: npm run start:prod
+    plan: starter
     envVars:
       - key: NODE_ENV
         value: production

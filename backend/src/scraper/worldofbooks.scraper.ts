@@ -27,9 +27,16 @@ export interface ScrapedCategory {
 export class WorldOfBooksScraper {
   private readonly baseUrl = 'https://www.worldofbooks.com';
   private readonly delay = Number(process.env.SCRAPE_DELAY) || 2000;
+  private playwrightAvailable = true;
 
   async scrapeNavigation(): Promise<ScrapedNavigation[]> {
     const results: ScrapedNavigation[] = [];
+    
+    // Check if Playwright is available
+    if (!this.playwrightAvailable) {
+      console.log('Playwright not available, returning fallback navigation');
+      return this.getFallbackNavigation();
+    }
     
     try {
       const crawler = new PlaywrightCrawler({
@@ -72,13 +79,8 @@ export class WorldOfBooksScraper {
       await crawler.run([this.baseUrl]);
     } catch (error) {
       console.error('Navigation scraping failed:', error);
-      // Return fallback navigation
-      return [
-        { title: 'Books', slug: 'books' },
-        { title: 'Children\'s Books', slug: 'childrens-books' },
-        { title: 'Fiction', slug: 'fiction' },
-        { title: 'Non-Fiction', slug: 'non-fiction' }
-      ];
+      this.playwrightAvailable = false;
+      return this.getFallbackNavigation();
     }
     
     return results;
@@ -86,6 +88,12 @@ export class WorldOfBooksScraper {
 
   async scrapeCategory(categoryUrl: string): Promise<ScrapedProduct[]> {
     const results: ScrapedProduct[] = [];
+    
+    // Check if Playwright is available
+    if (!this.playwrightAvailable) {
+      console.log('Playwright not available, returning fallback products');
+      return this.getFallbackProducts(categoryUrl);
+    }
     
     try {
       const crawler = new PlaywrightCrawler({
@@ -130,27 +138,8 @@ export class WorldOfBooksScraper {
       await crawler.run([categoryUrl]);
     } catch (error) {
       console.error('Category scraping failed:', error);
-      // Return fallback products
-      return [
-        {
-          title: 'Sample Book 1',
-          author: 'Author A',
-          price: '10.99',
-          currency: 'GBP',
-          image_url: '',
-          source_url: categoryUrl,
-          source_id: 'sample-1'
-        },
-        {
-          title: 'Sample Book 2',
-          author: 'Author B',
-          price: '15.99',
-          currency: 'GBP',
-          image_url: '',
-          source_url: categoryUrl,
-          source_id: 'sample-2'
-        }
-      ];
+      this.playwrightAvailable = false;
+      return this.getFallbackProducts(categoryUrl);
     }
     
     return results;
@@ -163,5 +152,58 @@ export class WorldOfBooksScraper {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim();
+  }
+
+  private getFallbackNavigation(): ScrapedNavigation[] {
+    return [
+      { title: 'Books', slug: 'books' },
+      { title: 'Children\'s Books', slug: 'childrens-books' },
+      { title: 'Fiction', slug: 'fiction' },
+      { title: 'Non-Fiction', slug: 'non-fiction' },
+      { title: 'Science Fiction', slug: 'science-fiction' },
+      { title: 'Mystery & Thriller', slug: 'mystery-thriller' }
+    ];
+  }
+
+  private getFallbackProducts(categoryUrl: string): ScrapedProduct[] {
+    const categorySlug = categoryUrl.split('/').pop() || 'books';
+    return [
+      {
+        title: `${categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)} Book 1`,
+        author: 'Author A',
+        price: '10.99',
+        currency: 'GBP',
+        image_url: '',
+        source_url: categoryUrl,
+        source_id: `${categorySlug}-sample-1`
+      },
+      {
+        title: `${categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)} Book 2`,
+        author: 'Author B',
+        price: '15.99',
+        currency: 'GBP',
+        image_url: '',
+        source_url: categoryUrl,
+        source_id: `${categorySlug}-sample-2`
+      },
+      {
+        title: `${categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)} Book 3`,
+        author: 'Author C',
+        price: '12.99',
+        currency: 'GBP',
+        image_url: '',
+        source_url: categoryUrl,
+        source_id: `${categorySlug}-sample-3`
+      },
+      {
+        title: `${categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)} Book 4`,
+        author: 'Author D',
+        price: '8.99',
+        currency: 'GBP',
+        image_url: '',
+        source_url: categoryUrl,
+        source_id: `${categorySlug}-sample-4`
+      }
+    ];
   }
 }
