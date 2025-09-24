@@ -1,9 +1,19 @@
 {
   "name": "worldbooks-explorer",
   "version": "1.0.0",
-  "main": "backend/main.js",
+  "description": "Full-stack product exploration platform for World of Books",
+  "private": true,
   "scripts": {
-    "start:prod": "node backend/main.js"
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm run start",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:prod": "cd backend && npm run start:prod"
   },
-  "dependencies": {}
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
