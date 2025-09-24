@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function ProductCard({ product }: { product: { id: string; title: string; author: string; price: string; image_url?: string; imageUrl?: string; } }) {
+export default function ProductCard({ product }: { product: { id: string; title: string; author: string; price: string; image_url?: string; imageUrl?: string; currency?: string; } }) {
   return (
     <article className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200">
       <Link href={`/products/${product.id}`} className="block">
