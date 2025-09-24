@@ -48,7 +48,7 @@ export class WorldOfBooksScraper {
           // Extract navigation items from the main navigation
           const navItems = await page.$$eval('nav a, .navigation a, [role="navigation"] a', (nodes) =>
             nodes.map((el) => ({
-              title: el.innerText?.trim() || '',
+              title: (el as HTMLElement).innerText?.trim() || '',
               href: el.getAttribute('href') || '',
             }))
           );
@@ -120,9 +120,9 @@ export class WorldOfBooksScraper {
                 const linkEl = el.querySelector('a') as HTMLAnchorElement;
                 
                 return {
-                  title: titleEl?.innerText?.trim() || 'Unknown Title',
-                  author: authorEl?.innerText?.trim() || 'Unknown Author',
-                  price: priceEl?.innerText?.replace(/[^\d.]/g, '') || '0',
+                  title: (titleEl as HTMLElement)?.innerText?.trim() || 'Unknown Title',
+                  author: (authorEl as HTMLElement)?.innerText?.trim() || 'Unknown Author',
+                  price: (priceEl as HTMLElement)?.innerText?.replace(/[^\d.]/g, '') || '0',
                   currency: 'GBP',
                   image_url: imgEl?.src || '',
                   source_url: linkEl?.href || window.location.href,
